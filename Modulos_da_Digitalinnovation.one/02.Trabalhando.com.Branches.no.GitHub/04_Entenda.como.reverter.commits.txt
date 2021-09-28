@@ -1,0 +1,84 @@
+Notas de Aula de Lucas Favaro Borsatto (email: paradigma0621@gmail.com)
+Módulo "Trabalhando com Branches no GitHub" do Site da Digital Innovation One ( https://digitalinnovation.one/ )
+Seção 03 - Entenda como reverter commits
+Aula 01 - Conceitos iniciais sobre reverter commits
+Aula 02 - Comandos para reverter commits - Parte 1
+Aula 03 - Comandos para reverter commits - Parte 2
+Professor: Otávio Reis
+------------------------------------------------------------------------------------------------------------
+
+Aula 01 (Conceitos iniciais sobre reverter commits)
+========
+
+	CUIDADO: Reversão de commits pode ocasionar perda de dados.
+
+------------------------------------------------------------------------------------------------------------
+
+Aula 02 (Comandos para reverter commits - Parte 1):
+========
+
+	O aplicativo Visualizing Git, disponível em:
+		https://git-school.github.io/visualizing-git/
+	auxilia a ter uma imagem visual do que acontece durante o lifecycle dos commits. Obs: a plataforma não trabalha com arquivos reais, por isso não é preciso rodar "git add ...", basta ir direto para: "git commit -m 'msg'.
+----
+
+	O 8fs7lxc1 é o SHA1 do commit que estamos revertendo:
+		git reset 8fs7lxc1
+	Nesse caso: a HEAD vai para o commit que se especificou (nesse caso 8fs7lxc1).
+	Diz-se que: os commits que vieram depois desse especificado foram revertidos.
+
+	Podemos usar também para reverter o último commit válido da branch atual:
+		git reset HEAD~1
+	Ele diz para a HEAD se mover um commit para trás. Se fosse usado, por exemplo: git reset HEAD~3  ... moveria a HEAD 3 commits para trás, e assim por diante.
+
+------------------------------------------------------------------------------------------------------------
+	O reset manipula o estado dos arquivos na Working Directory, Staging Area e na Branch Main. Uma vez o arquivo enviado para o github fica mais complicado reverter (o que complica mais ainda se ele já ter sido baixado por outros usuários).
+
+	Quando um arquivo é modificado ele volta para a Working Directory.
+
+----
+
+	Reverter último commit (volta os arquivos do último commit para a staging area, como se tivesse acabado de rodar o "git add"):
+		git reset --soft HEAD~1
+		git reset --soft
+
+	Reverter último commit (volta os arquivos do último commit para o working directory, como se não tivesse rodado o "git add" ainda):
+		git reset --mixed HEAD~1
+
+------------------------------------------------------------------------------------------------------------
+
+Aula 03 (Comandos para reverter commits - Parte 2):
+========
+	
+	Apagar o último commit, desfazendo as alterações (diferentemente do --soft que traz a última modificação para a stagind area, e do --mixed que traz os arquivos para a working directory, o --hard desaparece com as alterações do último commit):
+		git reset --hard HEAD~1
+	
+----------------------------------------------------
+
+	Outro modo de reverter arquivos é através da geração de um commit de reversão:
+		git revert HEAD~1
+			ou (git revert SHA1... ex:)
+		git revert 8fs7lxc1
+	
+----------------------------------------------------
+
+	Tudo o que foi dito até aqui sobre reversão de commits se baseia no repositório local. Vejamos agora como reverter um commit feito na origin (repositório remoto: github):
+		Estando em nosso repositório local, sincronizado com o repositório remoto, desfazemos o commit em nossa máquina:
+			git reset 8fs7lxc1
+		
+		Criamos e alteramos arquivos no progresso do nosso trabalho na máquina local e fazemos um commit para o repositório local:
+			git commit -m "msg"
+		
+		Não tem como empurrar agora o estado atual da máquina local para o repositório remoto, pois lá há arquivos que não existem no repositório remoto. Por exemplo: um push agora:
+			git push origin master
+		gera o erro: "Push rejected. Non fast-forward. Try pulling first"
+		
+		A saída é fazer um:
+			git pull origin master
+		depois, será preciso resolver todos os problemas de merge e, por último, subir o projeto:
+			git push origin master
+		
+		Outra forma de desfazer alterações no repositório removo é com o revert:
+			git revert 8fs7lxc1
+		Obs: isso pode gerar problemas de merge. Então será preciso resolver os problemas, e por fim subir o projeto:
+			git push origin master

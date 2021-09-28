@@ -1,0 +1,74 @@
+Notas de Aula de Lucas Favaro Borsatto (email: paradigma0621@gmail.com)
+Módulo 1. Módulo "Introdução ao Git" - Nível Básico - Site da Digital Innovation One ( https://digitalinnovation.one/ )
+Professor: Otávio Reis
+-----------------------------------------------------------
+
+Git: sistema distribuído seguro
+-----------------------------------------------------------
+SHA1: (lê-se: "chá um")
+SHA= Secure Hash Algorithm (Algoritmo de Hash Seguro)
+(Algoritmo de encriptação). É um conjunto de funções hash criptográficas projetadas pela NSA (Agência de Segurança Nacional dos EUA).
+
+	Gera um conjunto de caracteres de 40 dígitos. É uma forma curta de representar um arquivo.
+---
+	openssl sha1 arquivo.txt
+	(gera o sha1 do arquivo)
+-----------------------------------------------------------
+
+	git config --global user.email "paradigma0621@gmail.com"
+	git config --global user.name "Lucas Favaro Borsatto"
+Obs: o global significa que será esses dados para todos repositórios em que se for trabalhar.
+Omita --global para setar essa identidade para apenas para o repositório em que se está.
+
+---
+	Para ver quais são essas configurações da minha máquina:
+	git config --list	
+  
+	Para mudar alguma dessas configurações:
+	git config --global --unset user.name      (aqui ele limpa a variável user.name)
+-----------------------------------------------------------
+
+	git status
+
+-----------------------------------------------------------
+
+	git commit -m "msg de commit"
+
+-----------------------------------------------------------
+	O usuário tinha um arquivo na pasta /docs/tcc/texto.tex
+	rodou o 
+		git add /docs/tcc/texto.tex
+	depois ele moveu esse arquivo para /docs/bckp/texto.tex
+	quando ele rodar o git status vai falar que o /docs/tcc/texto.tex foi deletado. Será preciso rodar: 
+ 		git add /docs/tcc/texto.tex    (isso mesmo: o arquivo que foi movido (que não existe mais nessa pasta))
+para fazer update desse arquivo que saiu dessa pasta tcc. Então com o comando "git status" teremos saída:
+		deleted:    tcc/texto.tex
+
+-----------------------------------------------------------
+
+	git remote add origin https://github.com/paradigma0621/JavaLearningWithExamples.git
+	Configura internamente o git para o apelido "origin" apontar para o endereço que vem na sequência (para não ter que ficar digitando todo o https toda hora).
+
+	Quando iniciamos um repositório local com "git init", ainda não é criada nenhuma branch. Com o primeiro commit é criada automaticamente uma branch no dito repositório local. No github a mesma coisa: quando fazemos o primeiro commit é criada uma branch (pode ser escolhendo a criação de README.md sugerido pelo github ao criar o repositório, pois ele faz um commit com isso).
+
+	Para subir os arquivos para o repositório remoto declaro em origin ("master" é o nome do branch para o qual se sobe os commits):
+		git push origin master
+	
+-----------------------------------------------------------
+	git pull origin main  (puxa o repositório de branch main do github para nossa máquina local. Obs: ele puxa o repositório para a branch em que estamos em nossa máquina local (que talvez poderia ser outro nome que não "main"... por exemplo: "master") - ele não cria uma branch nova ao fazer o download).
+		(obs: supondo que não foi possível fazer o push inicial porque eu criei um arquivo novo no meu diretório local, fazendo o git pull não apagará esse esse arquivo local, apenas fará download dos novos da internet)
+
+-----------------------------------------------------------
+	git remote -v	
+mostra as listas de repositórios que se tem cadastrado. Pode aparecer algo do tipo:
+	origin	https://github.com/paradigma0621/JavaLearningWithExamples.git (fetch)
+	origin	https://github.com/paradigma0621/JavaLearningWithExamples.git (push)
+-----------------------------------------------------------
+	Baixar repositório na integra:
+		git clone https://github.com/paradigma0621/JavaLearningWithExamples.git
+	Depois de clonar pode rodar: git remote -v
+-----------------------------------------------------------
+	README.md: Arquivo do tipo Markdown usado como referência pelo github para falar sobre o repositório em questão. Apresenta possibilidade de estilização do conteúdo quando carregado por um editor apropriado:
+	# Título 1
+	## Título 2
+		**texto**

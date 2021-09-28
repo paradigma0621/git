@@ -1,0 +1,59 @@
+Notas de Aula de Lucas Favaro Borsatto (email: paradigma0621@gmail.com)
+Módulo "Trabalhando com Branches no GitHub" do Site da Digital Innovation One ( https://digitalinnovation.one/ )
+Seção 01 - Primeiros conceitos sobre Branches
+Aula 01 - O que são branches
+Aula 02 - Entendendo na prática sobre branches
+Aula 03 - Guiando-se nas branches com a tag HEAD
+Aula 04 - Comando checkout e merge
+Professor: Otávio Reis
+-------------------------------------------------------------------------------
+
+	Mostra a situação dos arquivos (quem está staged e quem está untracked):
+		git status
+
+	Para tirar arquivos da área de stage:
+		git restore --staged nomeArquivo.txt
+
+-----------------------------
+
+	Mostra a quais repositórios remotos o projeto do momento está linkado
+		git remote -v
+
+	Quando é criado um repositório no github: não é associada nenhuma branch em relação a ele. Para passar a existir uma branch é preciso fazer um commit nele. Se for marcada a caixa de texto do Github para criar um README.md, é automaticamente feito um commit e criada uma branch.
+-----------------------------
+	git remote add origin https://gitgub.com/something   (o origin trata-se do apelido que demos para o repositório lá no github)
+
+	git pull origin main  (puxa o repositório de branch main do github para nossa máquina local. Obs: ele puxa o repositório para a branch em que estamos em nossa máquina local (que talvez poderia ser outro nome que não "main"... por exemplo: "master") - ele não cria uma branch nova)
+
+	git branch
+	(mostra as branches em que temos em nossa máquina local onde se executa o comando, ou seja, no repositório local. A branch usada no momento (=branch HEAD) tem um "*" na frente.
+
+	Supondo que rodamos "git branch" em nossa máquina local, e vimos que é a "master", e que a branch no github é "main", ao rodar o comando:
+		git push origin master
+	Aparentemente não vai ter acontecido nada no repositório do github, mas ele criou sim uma branch "master" lá. Ou seja: caso estejamos no console e quisermos fazer um push de uma branch branch-especifica de nossa máquina local para o repositório origin (ex: no github), rodamos:
+		git push origin branch-especifica-para-a-qual-queremos-que-vah-dentro-do-github
+
+-----------------------------
+
+	HEAD:
+	- Mostra onde estamos localizados dentro dos commits.
+	- Aponta sempre para o último commit de uma branch... se mudarmos a branch com um comando, a HEAD vai para o último commit válido da mesma.
+
+
+	Criar nova branch (na verdade checkout é usado para movimentar a HEAD, mas passando o "-b" diz para criar a nova-branch):
+		git checkout -b nova-branch
+	Obs: quando é criada uma nova branch ela traz consigo todos os arquivos do último commit da branch da qual ela se originou.
+----
+	Mudar a HEAD para a última posição de commit de uma nome-branch-antiga já commitada:
+		git checkout nome-branch-antiga
+
+	Para mergear essa  branch nome-branch-antiga com uma branch que vem depois dela nome-branch-nova: estando com a HEAD na nome-branch-antiga (=estando na branch que você quer), executar:
+		git merge nome-branch-nova
+	Depois disso a HEAD vai lá pro final da nome-branch-nova, já fundida com a nome-branch-antiga, e com o nome dessa última.
+	(Pro: Pronúncia: merge => "mũrg")
+-
+	Exemplo de aplicação: temos um repositório com as branches "main" e uma "ramificacao1". A branch "ramificacao1" ramificou da "main", e foi adicionado um arquivo a mais na "ramificacao1". Consideramos que ficou bom o projeto da "ramificacao1" e queremos que ela passe a ser a nova "main" (que é a branch que nós queremos). Eis os comandos para tanto:
+		git checkout main
+		git merge ramificacao1
+		git status (vai gerar a mensagem: "Your branch is ahead of 'origin/main' by 1 commit."   (que quer dizer que precisamos atualizar a main do github com a "main" local. Fazemos isso na linha abaixo:)
+		git push origin main

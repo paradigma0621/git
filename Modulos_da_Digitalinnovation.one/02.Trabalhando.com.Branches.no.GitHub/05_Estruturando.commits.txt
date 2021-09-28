@@ -1,0 +1,93 @@
+Notas de Aula de Lucas Favaro Borsatto (email: paradigma0621@gmail.com)
+Módulo "Trabalhando com Branches no GitHub" do Site da Digital Innovation One ( https://digitalinnovation.one/ )
+Seção 04 - Estruturando commits
+Aula 01 - Conceitos iniciais sobre estruturação de commits
+Aula 02 (Praticando estruturação de commits - Parte 1)
+Aula 03 (Conceitos avançados sobre commits)
+Professor: Otávio Reis
+------------------------------------------------------------------------------------------------------------
+
+Aula 01 (Conceitos iniciais sobre estruturação de commits):
+=======
+
+Estrutura do commit
+	Assunto
+	Corpo
+	Rodapé
+	
+----
+Assunto: (msg do commit) 
+	- Até 50 caracteres. 
+	- Não terminar com ponto.
+	- Escrito de forma imperativa.
+		Exemplos: "Add a feature", em vez de: "Added a feature"
+			  "Adiciona a funcionalidade x", em vez de "Funcionalidade x adicionada"
+			  "If applied, this commit will add payment integatrion"
+ 			  "Se aceito, esse commit adiciona método de pagamento" (usar modo imperativo)
+----
+Corpo: 
+	- Adicione detalhes ao commit
+	- Tente quebrar a linha em 75 caracteres
+	- Identifique sua audiência
+	- Explique tudo (não assuma que os outros usuários tenham um conhecimento prévio)
+	- Use markdown
+----	
+Rodapé (opcional):
+	Referenciar uma issue no commit para poder alguma interação com ela.
+	
+------------------------------------------------------------------------------------------------------------
+Aula 02 (Praticando estruturação de commits - Parte 1):
+=======
+
+	Para mudar o editor padrão: (Opções: --system, --local, --global):
+	git config --global --list 
+	git config --global core.editor "gedit"           (onde "gedit" é o comando do editor que queremos como padrão)
+	
+-----
+
+	Depois de adicionar arquivos à Staging Area, podemos rodar:
+		git commit
+	O Git abrirá seu editor padrão. Linhas que começam com "#" são ignoradas.
+	Para cancelar o commit basta fechar o arquivo no editor sem salvá-lo.
+	
+	Para alterar o editor padrão rodamos:
+		git config --global --unset core.editor
+		git config --global core.editor "code --wait"   (configura o vscode como editor como padrão)
+		
+		
+------------------------------------------------------------------------------------------------------------
+Aula 03 (Conceitos avançados sobre commits):
+=======
+	Fazendo o commit com:
+		git commit
+	o que acarretará em abrir o editor. É preciso deixar uma linha em branco entre o assunto do commit e o corpo do mesmo. Por último coloca-se o rodapé. Caso o objetivo do commit seja fechar uma Issue do github, termina-se o arquivo com conteúdo de rodapé como, por exemplo:
+	Closes #12
+		Onde "#12" é o hash da issue que se quer fechar dentro do github
+
+	Closes #12 
+	Refs 676104e
+		Onde "#12" é o hash da issue que se quer fechar, e associa o commit de SHA1 676104e à issue.
+------------------------------------------
+Semantic Versioning (Versionamento Semântico)
+exemplo: 3.2.7
+	3: Major
+	2: Minor
+	7: Patch
+	
+	Mudar o major: quando introduzir uma funcionalidade que quebra a compatibilidade com versões anteriores
+	Mudar o minor: quando implementar uma nova funcionalidade, mas não quebra a compatibilidade com versões anteriores
+	Mudar o patch: quando ocorrer pequenas alterações alterações de correções de bug
+	Ver em https://www.conventionalcommits.org/pt-br/v1.0.0/  uma possível apresentação de estrutura de commits:
+	
+	
+		<tipo>[escopo opcional]: <descrição>
+		
+		[corpo opcional]
+		
+		[rodapé(s) opcional(is)]
+
+
+	Alguns possíveis recursos de <tipo>:
+		1) fix: um commit do tipo fix soluciona um problema na sua base de código (isso se correlaciona com PATCH do versionamento semântico).
+		2) feat: um commit do tipo feat inclui um novo recurso na sua base de código (isso se correlaciona com MINOR do versionamento semântico).
+		3) BREAKING CHANGE: um commit que contém no rodapé opcional o texto BREAKING CHANGE:, ou contém o símbolo ! depois do tipo/escopo, introduz uma modificação que quebra a compatibilidade da API (isso se correlaciona com MAJOR do versionamento semântico).

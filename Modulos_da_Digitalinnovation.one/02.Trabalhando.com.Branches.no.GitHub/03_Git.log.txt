@@ -1,0 +1,39 @@
+Notas de Aula de Lucas Favaro Borsatto (email: paradigma0621@gmail.com)
+Módulo "Trabalhando com Branches no GitHub" do Site da Digital Innovation One ( https://digitalinnovation.one/ )
+Seção 02 - Visualização de histórico
+Aula 02 - Comando git log
+Aula 03 Subcomandos específicos com git log
+Professor: Otávio Reis
+----------------------------------------------------------------------------------------------------------------------
+
+Aula 02:
+========
+	git log
+	Para navegar na lista:
+		- Flecha para baixo
+		- Flecha para cima
+		- PgUp
+		- PgDown
+		- e (sai da lista)
+	
+----------------------------------------------------------------------------------------------------------------------
+	FILTROS:
+		Para mostrar os commits de um determinado diretório:
+			git log nomeDiretorio
+
+		Para mostrar os commits de um determinado arquivo:
+			git log nomeArquivo
+----------------------------------------------------------------------------------------------------------------------
+
+Aula 03:
+========
+	git log --oneline      (apresenta lista de commits contendo seus conteúdos resumidos: em apenas 1 linha cada)
+	git log --graph	       (geração gráfica no terminal da movimentação das branches)
+
+	Software de visualização gráfica recomendados:
+		Entrar no site do Git e ir em Download de GUI's:
+			Recomendadas pelo professor do curso da DIO:
+				Windows: Git Hub Desktop
+				Linux: gitkraken
+
+				Obs: gitk   (já vem com o git para sistema Windows)
