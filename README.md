@@ -11,3 +11,5 @@ Notas de estudo sobre uso do git.
 			2.3 - Comando git log
 			2.4 - Entenda como reverter commits
 			2.5 - Estruturando commits
+	* TopicosEmORG
+		Notas aprendizados de vivência com a ferramenta

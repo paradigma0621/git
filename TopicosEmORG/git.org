@@ -1,0 +1,47 @@
+* Configurar conta de um repositório local
+Enviar o comando
+	git config --local user.email user123@gmail..com
+dentro da pasta do repositório local
+
+* Baixar dados
+** estando numa branch da tarefa e querer baixar um único arquivo da master
+git checkout origin/master <path to file>
+* Apagar
+** apagar branch na máquina local
+To delete a local branch (obs: não pode estar com a branch definida como a de trabalho no momento - mudar para "master" por exemplo, para conseguir deletar).
+
+git checkout outra_branch_qualquer_q_nao_se_queira_apagar  (sair da branch)
+
+git branch -d the_local_branch_want_to_delete
+
+------
+Obs: ogit pode reclamar quando tentar deletar:
+lucas@maqLocal:~/Documentos/Repositorios/report$ git branch -d bugfix/CL-77 
+error: The branch 'bugfix/CL-77' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D bugfix/CL-77'.
+
+Para forçar a deleção da branch local, rode o comando:
+lucas@maqLocal:~/Documentos/Repositorios/report$ git branch -D bugfix/CL-77 
+e apagou só a branch da máquina local
+
+** apagar uma branch que eu já fiz push dela (ela está lá no servidor)
+git push origin --delete branchK
+ele apaga essa branch localmente também? Não, mas apenas no servidor.
+Uma vez apagado ela do servidor, entrando nela localmente:
+	git checkout branchK
+é possível rodar;
+	git push
+que a branchK sobe pro servidor (sem precisar fazer commit).
+
+------------------------
+* renomear nome de branch
+To rename the current branch:
+	git branch -m <newname>
+
+To rename a branch while pointed to any branch:
+
+	git branch -m <oldname> <newname>
+* Criação de arquivos novos
+O git barrou mudar a branchA para a branchB só pq eu dei um 'git add  x' ????	Não, mas por que ocorreram modificações na branchA de arquivos já existentes na branchA. No caso de criação de NOVOS arquivos na branchA, mudando de branch com 'git checkout branchB', depois, leva-se os arquivos novos criados na branchA para a branchB: é possível isso sem nem mesmo 'git add z' e 'git push'. O mesmo ocorre estando na branchA e rodando 'git checkout -b novaBranchQ'.
+Obs2: No caso de criação de novos arquivos que ficam trafeando entre as branchs, sem 'git add x': se visualizares o repositório remoto verificará que o arquivo não estará lá - é possível visualizar quais arquivos novos foram criados no repositório local, e que estão trafegando entre as branchs, com 'git status'.
+Obs3: uma vez feito 'git add arqNovo.txt' e 'git push', dentro da branchK: o arquivo arqNovo.txt vai unicamente para essa branchK e não aparece mais nas outras branchs.

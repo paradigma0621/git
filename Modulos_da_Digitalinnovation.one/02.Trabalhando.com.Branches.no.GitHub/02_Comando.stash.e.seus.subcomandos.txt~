@@ -45,7 +45,7 @@ Professor: Otávio Reis
 	Para recuperarmos o conteúdo da stash novamente:
 		git stash list      (pegar daqui o número do elemento de dentro do array que queremos)
 		git stash pop NUMERO_PEGO_DO_COMANDO_DA_LINHA_DE_CIMA
-	Exemplo: git stash pop 1          (OBS IMPORTANTE: o primeiro elemento da stash é obtido com:  git stash pop 0)
+	Exemplo: git stash pop 1
 
 	Para limpar o que está dentro da stash:
 		git stash clear
