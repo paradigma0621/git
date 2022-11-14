@@ -45,3 +45,14 @@ To rename a branch while pointed to any branch:
 O git barrou mudar a branchA para a branchB só pq eu dei um 'git add  x' ????	Não, mas por que ocorreram modificações na branchA de arquivos já existentes na branchA. No caso de criação de NOVOS arquivos na branchA, mudando de branch com 'git checkout branchB', depois, leva-se os arquivos novos criados na branchA para a branchB: é possível isso sem nem mesmo 'git add z' e 'git push'. O mesmo ocorre estando na branchA e rodando 'git checkout -b novaBranchQ'.
 Obs2: No caso de criação de novos arquivos que ficam trafeando entre as branchs, sem 'git add x': se visualizares o repositório remoto verificará que o arquivo não estará lá - é possível visualizar quais arquivos novos foram criados no repositório local, e que estão trafegando entre as branchs, com 'git status'.
 Obs3: uma vez feito 'git add arqNovo.txt' e 'git push', dentro da branchK: o arquivo arqNovo.txt vai unicamente para essa branchK e não aparece mais nas outras branchs.
+* Dica para mover mudanças que estão (unstaged) de uma branch para uma nova branch
+git switch -c newBranch
+** Obs
+Edu 
+git stash salva
+
+Frank
+também 
+mas encurta o caminho do stash apply (faz o mesmo que stash pop)
+* mudar mensagem do último commit
+ git commit --amend
