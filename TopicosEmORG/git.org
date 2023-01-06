@@ -55,4 +55,16 @@ Frank
 também 
 mas encurta o caminho do stash apply (faz o mesmo que stash pop)
 * mudar mensagem do último commit
+** Se ainda não tiver feito o push:
  git commit --amend
+** Se já tiver feito o push (ainda não testei)
+Just say:
+
+git commit --amend -m "New commit message"
+and then
+
+git push --force
+
+* Para após ter sido feito um commit, e não dado ainda o git push... para desconsiderar esse último commit:
+	git reset --hard HEAD^
+	depois pode-se seguir operando no git normalmente.
