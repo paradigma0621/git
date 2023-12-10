@@ -6,6 +6,9 @@ dentro da pasta do repositório local
 * Baixar dados
 ** estando numa branch da tarefa e querer baixar um único arquivo da master
 git checkout origin/master <path to file>
+** baixar branch que não tenho localmente
+git fetch branchXQueNaoTenhoLocalmente
+Obs: não sei se tem que colocar o "origin" no comando acima.
 * Apagar
 ** apagar branch na máquina local
 To delete a local branch (obs: não pode estar com a branch definida como a de trabalho no momento - mudar para "master" por exemplo, para conseguir deletar).
@@ -68,3 +71,82 @@ git push --force
 * Para após ter sido feito um commit, e não dado ainda o git push... para desconsiderar esse último commit:
 	git reset --hard HEAD^
 	depois pode-se seguir operando no git normalmente.
+* HEAD detached at origin/branch_name
+o que significa quando:
+HEAD detached at origin/feature/OD-178-refactor?
+** ChatGPT
+A mensagem "HEAD detached at origin/feature/OD-178-refactor" refere-se a um estado específico no Git, um sistema de controle de versão utilizado no desenvolvimento de software. 
+
+Em termos simples, o Git mantém um ponteiro especial chamado "HEAD" que, na maioria dos casos, aponta para o commit (versão do código) mais recente na branch (ramificação) na qual você está trabalhando. 
+
+No entanto, em alguns casos, você pode estar em um estado onde o HEAD não está apontando para o commit mais recente de qualquer branch. Isso é o que é conhecido como um "HEAD detaching" ou "HEAD detached". 
+
+Em outras palavras, você está olhando para um commit específico na história do seu projeto, e não o final (ou a "cabeça") de uma branch. Isso é útil em muitas situações, como quando você quer explorar o histórico do projeto, mas não necessariamente fazer alterações.
+
+Neste caso, "HEAD detached at origin/feature/OD-178-refactor" significa que você está em um estado de "HEAD detached" no commit ao qual a referência "origin/feature/OD-178-refactor" está apontando. 
+
+Essa referência geralmente representa a última versão da branch "OD-178-refactor" no repositório remoto chamado "origin". Portanto, você está olhando para a versão mais recente desta branch, conforme ela existe no repositório remoto. Você não está em uma branch local com o mesmo nome, mas em vez disso, está em um estado de "HEAD detached".
+** Medida que eu tomei que normalizou a branch
+nothing to commit, working tree clean
+lucas.borsatto@nxtn54:~/Documentos/Repositorios/operation-desk$ git pull origin feature/OD-178-refactor
+From bitbucket.org:presenca/operation-desk
+ * branch            feature/OD-178-refactor -> FETCH_HEAD
+Already up to date.
+
+lucas.borsatto@nxtn54:~/Documentos/Repositorios/operation-desk$ git status 
+HEAD detached at origin/feature/OD-178-refactor
+nothing to commit, working tree clean
+
+lucas.borsatto@nxtn54:~/Documentos/Repositorios/operation-desk$ git checkout feature/OD-178-refactor
+Switched to branch 'feature/OD-178-refactor'
+Your branch is up to date with 'origin/feature/OD-178-refactor'.
+
+lucas.borsatto@nxtn54:~/Documentos/Repositorios/operation-desk$ git status 
+No ramo feature/OD-178-refactor
+Your branch is up to date with 'origin/feature/OD-178-refactor'.
+
+nothing to commit, working tree clean
+AP: Essa última mensagem mostra de fato que estou com a branh mais atualizada possível, conforme repositório do bitbucket
+* estudos quando 2 pessoas alteram o mesmo arquivo em máquinas separadas
+Desenvolvedor A baixa master.
+Desenvolvedor B baixa master simulataneamente a Desenvolvedor A.
+Ambos desenvolvedores atuam no arquivoX.txt e sobem suas branchs sem rodar git pull.
+
+O que acontece: se eu fizer alterações dentro de um mesmo arquivo em 2 locais não correlatos, subindo cada um deles em separado pelos 2 desenvolvedores, o git mescla essas 2 versões desse mesmo arquivo forma inteligente sem precisar resolver conflito de merge. Se foi alterado pelos 2 modificadores na mesma linha desse mesmo arquivo: quem sobe por último tem que resolver conflito de merge.
+
+* subir um commit para outra branch que não a atual, apesar de o commit tenha sido feito nessa branch
+Para levar dum commit que foi feito na branchOrigem que está apenas local para a branchDestino que está remota (no servidor do bitbucket):
+
+		git push origin branchOrigem:branchDestino
+
+Obs: o commit da branchOrigem estava apenas localmente (e não no bitbucket nessa mesma branch - não foi dado push em branchOrigem). Após o push: só aparece o commit na branchDestino (ele não fica registrado na branchOrigem).
+
+* remover arquivos da staging area
+#+BEGIN_SRC markdown
+Se você deseja remover (ou seja, desfazer o `add`) de todos os arquivos que estão atualmente na staging area (área de preparação) do Git, você pode fazer isso com o comando `git reset`.
+
+Para remover todos os arquivos da staging area:
+
+```bash
+git reset
+```
+
+Esse comando desfará o `git add` para todos os arquivos que foram adicionados à staging area, mas ainda não foram commitados. Note que isso não modificará os arquivos em si, apenas sua presença na staging area.
+
+Se você quiser remover um arquivo específico da staging area:
+
+```bash
+git reset <nome_do_arquivo>
+```
+
+Por exemplo:
+
+```bash
+git reset meu_arquivo.txt
+```
+
+Isso removerá apenas `meu_arquivo.txt` da staging area.
+
+É importante notar que os comandos acima não modificam ou deletam os arquivos em si. Eles apenas removem os arquivos da staging area, ou seja, desfazem a ação do `git add`. Se você deseja deletar um arquivo do diretório de trabalho e também da staging area, terá que usar outros comandos.
+#+END_SRC
+* resetar a branch local conforme branch em um repositório
