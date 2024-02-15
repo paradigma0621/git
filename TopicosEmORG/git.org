@@ -149,4 +149,14 @@ Isso removerá apenas `meu_arquivo.txt` da staging area.
 
 É importante notar que os comandos acima não modificam ou deletam os arquivos em si. Eles apenas removem os arquivos da staging area, ou seja, desfazem a ação do `git add`. Se você deseja deletar um arquivo do diretório de trabalho e também da staging area, terá que usar outros comandos.
 #+END_SRC
-* resetar a branch local conforme branch em um repositório
+* resetar a branch repositório conforme branch local (dual do tópico abaixo)
+git checkout minhaBranchLocalDaQualQueroSubirUmaCopiaDeSeuHistoricoDeCommits
+
+<(faço modificações em arquivos locais)>
+
+git commit -m "abc"
+git push -f
+* resetar a branch local conforme branch do repositório  (dual do tópico acima)
+git checkout qa   (checkout na branch local)
+git reset --hard origin/qa   (espelho na minha branch local o histórico da branch qa remota)
+
