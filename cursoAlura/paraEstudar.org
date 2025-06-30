@@ -1,0 +1,300 @@
+* quando rodamos o git reset --hard branchName
+	ele reseta com base em qual branch?
+em qual commit/ponto?
+* como fazer um git pull de um único arquivo de uma branch específica?
+cherry-pick não funciona, pois ele traz um commit (hash) inteiro
+** substituindo o arquivo já existente
+#+BEGIN_SRC markdown
+Para trazer um único arquivo de uma branch específica no Git, você pode usar o comando `git checkout` com a sintaxe para especificar o branch e o caminho do arquivo. Aqui está o comando que você deve usar:
+
+```bash
+git checkout <branch> -- <caminho/do/arquivo>
+```
+
+### Exemplo:
+Vamos supor que você queira trazer o arquivo `config/settings.json` da branch `feature-branch` para a sua branch atual. O comando seria:
+
+```bash
+git checkout feature-branch -- config/settings.json
+```
+#+END_SRC
+** fazendo mesclagem
+#+BEGIN_SRC markdown
+Se você deseja trazer um único arquivo de uma branch específica e mesclar as alterações, você pode usar o comando `git checkout` junto com o parâmetro `--patch`. Esse comando permite que você escolha interativamente quais partes do arquivo deseja aplicar, proporcionando um processo de mesclagem detalhado.
+
+Aqui estão os passos detalhados:
+
+### 1. Use o comando `git checkout` com `--patch`:
+
+```bash
+git checkout --patch <branch> -- <caminho/do/arquivo>
+```
+
+### Exemplo:
+
+Vamos supor que você queira trazer o arquivo `config/settings.json` da branch `feature-branch` e mesclar as alterações interativamente. O comando seria:
+
+```bash
+git checkout --patch feature-branch -- config/settings.json
+```
+
+### 2. Processo Interativo:
+
+Após executar o comando acima, o Git abrirá um processo interativo onde você poderá escolher como lidar com cada hunk (bloco de alterações) do arquivo. Você verá um prompt para cada hunk:
+
+- **y**: para aplicar o hunk
+- **n**: para não aplicar o hunk
+- **q**: para parar de selecionar hunks
+- **a**: para aplicar todos os hunks restantes
+- **d**: para não aplicar os hunks restantes
+- **s**: para dividir o hunk em partes menores
+- **e**: para editar manualmente o hunk atual
+- **?**: para obter ajuda sobre essas opções
+#+END_SRC
+** obs: sobre o tópico acima: para definir o editor padrão que a opção "e" vai usa
+Configurar o Editor para um Repositório Específico
+Se você deseja definir o editor padrão apenas para o repositório atual, não use a opção --global:
+
+git config core.editor "nome-do-editor"
+exemplo: git config core.editor gedit
+* sempre quando tem conflito é mostrado com git status?
+em um caso onde houve conflito, foi mostrada a seguinte mensagem abaixo com 'git status' (confirmando que ele alerta):
+** nexti-web git:(paidFeature/OP-3060) ✗ git status                         
+No ramo paidFeature/OP-3060
+Seu ramo está à frente de 'origin/paidFeature/OP-3060' por 2 submissões.
+  (use "git push" to publish your local commits)
+
+Você tem caminhos não mesclados.
+  (fixar conflitos e executar "git commit")          ///**************************************
+  (use "git merge --abort" to abort the merge)
+
+Mudanças a serem submetidas:
+	modified:   app/scripts/controllers/operationrequest.controller.js
+	modified:   app/scripts/controllers/person.controller.js
+	modified:   app/scripts/controllers/timetrackingperiod.controller.js
+	modified:   app/scripts/controllers/timetrackingprofile.controller.js
+	modified:   app/scripts/i18n/messages.en_GB.properties.js
+	modified:   app/scripts/i18n/messages.es_CO.properties.js
+	modified:   app/scripts/i18n/messages.pt_BR.properties.js
+	modified:   app/views/schedule/schedule_add.html
+
+Caminhos não mesclados:
+  (usar "git add <arquivo>..." para marcar resolução)           ///************* aparece "ambos modificados" abaixo
+	ambos modificados:   app/scripts/controllers/useraccount.controller.js
+	ambos modificados:   app/scripts/directives/core.main.directive.js
+	ambos modificados:   app/scripts/routes.js
+	ambos modificados:   app/views/person/person_add.html
+	ambos modificados:   app/views/useraccount/useraccount_add.html
+
+** PORÉM MOSTRA MENSAGEM SEMELHANTE QUANDO RESOLVIDO O CONFLITO
+*** 'git status' para quando resolvido o conflito... mostra ainda pontos que não confirmam que foi de fato resolvido
+No ramo paidFeature/OP-3060
+Seu ramo está à frente de 'origin/paidFeature/OP-3060' por 2 submissões.
+  (use "git push" to publish your local commits)
+
+Você tem caminhos não mesclados.
+  (fixar conflitos e executar "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Mudanças a serem submetidas:
+	modified:   app/scripts/controllers/operationrequest.controller.js
+	modified:   app/scripts/controllers/person.controller.js
+	modified:   app/scripts/controllers/timetrackingperiod.controller.js
+	modified:   app/scripts/controllers/timetrackingprofile.controller.js
+	modified:   app/scripts/i18n/messages.en_GB.properties.js
+	modified:   app/scripts/i18n/messages.es_CO.properties.js
+	modified:   app/scripts/i18n/messages.pt_BR.properties.js
+	modified:   app/views/schedule/schedule_add.html
+
+Caminhos não mesclados:
+  (usar "git add <arquivo>..." para marcar resolução)
+	ambos modificados:   app/scripts/controllers/useraccount.controller.js
+	ambos modificados:   app/scripts/directives/core.main.directive.js
+	ambos modificados:   app/scripts/routes.js
+	ambos modificados:   app/views/person/person_add.html
+	ambos modificados:   app/views/useraccount/useraccount_add.html
+
+Changes not staged for commit:
+  (utilize "git add <arquivo>..." para atualizar o que será submetido)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   app/scripts/controllers/person.controller.js
+
+* consideração de caso prático de git reset --hard branch
+zera a staging area de arquivos que foram modificados, mas dos que foram criados novos não exclui localmente
+* ESTUDAR: quando executo: git reset --hard origin/qa, com base em que é atualizada a branch origin/qa?
+** ChatGPT
+Quando você executa o comando `git reset --hard origin/qa`, você está atualizando seu branch local para coincidir exatamente com o estado do branch `origin/qa` no repositório remoto. Vamos detalhar o que isso significa:
+
+1. **`git reset --hard origin/qa`**: Este comando redefine o branch atual (aquele em que você está trabalhando) para o commit apontado pelo branch `origin/qa`. O argumento `--hard` indica que todas as mudanças no diretório de trabalho e na área de staging serão descartadas, fazendo com que seu diretório de trabalho corresponda exatamente ao estado do commit `origin/qa`.
+
+2. **`origin/qa`**: Este é um branch remoto. `origin` é o nome padrão dado ao repositório remoto quando você clona um repositório. O branch `qa` é o branch específico dentro desse repositório remoto.
+
+Para que o branch `origin/qa` esteja atualizado, você normalmente precisará executar um `git fetch` antes do `git reset`. O `git fetch` atualiza os branches remotos (`origin/qa` neste caso) com o estado mais recente do repositório remoto. Aqui está o fluxo completo de como você deve proceder:
+
+1. **`git fetch origin`**: Este comando busca todos os branches e suas atualizações do repositório remoto, atualizando suas referências locais, como `origin/qa`.
+
+2. **`git reset --hard origin/qa`**: Agora, você redefine seu branch atual para o estado mais recente do `origin/qa`.
+
+### Exemplo:
+
+```bash
+git fetch origin
+git reset --hard origin/qa
+```
+
+Isso garante que seu branch local seja uma cópia exata do branch remoto `qa` no momento mais recente.
+* ESTUDAR: git reset --hard origin/qa faz alguma alteração na branch em que estou logado no momento?
+FAZER TESTE Prático
+** ChatGPT
+Sim, o comando `git reset --hard origin/qa` faz alterações na branch em que você está logado no momento. Aqui está uma explicação mais detalhada:
+
+### Comando `git reset --hard origin/qa`
+
+1. **Branch Atual**:
+   - O comando é executado no contexto do branch em que você está atualmente logado.
+   - O branch atual será redefinido para coincidir exatamente com o estado do branch `origin/qa`.
+
+2. **Descarte de Alterações**:
+   - A opção `--hard` faz com que todas as mudanças no seu diretório de trabalho e na área de staging sejam descartadas.
+   - Isso significa que quaisquer alterações não commitadas ou staged serão perdidas.
+
+### Resumo do que Acontece:
+
+- **Reset**: O branch atual (onde você está logado) será movido para o commit que `origin/qa` aponta.
+- **Hard Reset**: Todas as alterações locais (não commitadas) serão removidas e o diretório de trabalho será atualizado para refletir o estado do commit apontado por `origin/qa`.
+
+### Exemplo:
+
+Suponha que você esteja atualmente no branch `feature`, e você executa o seguinte comando:
+
+```bash
+git reset --hard origin/qa
+```
+
+Neste caso, o branch `feature` será redefinido para o estado do commit apontado por `origin/qa`. Todas as alterações não commitadas no branch `feature` serão perdidas e o estado do diretório de trabalho será atualizado para refletir exatamente o commit de `origin/qa`.
+
+### Recomendações:
+
+- **Salvar Alterações**: Antes de executar um `git reset --hard`, é recomendável commitar ou stash quaisquer mudanças locais que você não queira perder.
+- **Confirmar Branch**: Certifique-se de que está no branch correto antes de executar o comando, pois ele afetará o branch atual.
+
+### Comandos Úteis Antes do Reset:
+
+1. **Stash Changes**:
+   ```bash
+   git stash
+   ```
+
+2. **Check Current Branch**:
+   ```bash
+   git branch
+   ```
+
+3. **Fetch Latest Changes**:
+   ```bash
+   git fetch origin
+   ```
+
+Assim, você pode garantir que as alterações que deseja preservar não sejam perdidas e que está redefinindo o branch correto.
+* se fosse fazer como o Edu falou: resetar qa com minha branch - como seria?
+
+logado na branch qa
+git reset --hard origin/paidFeature/OP-3060
+* VER: /home/lucas.borsatto/Vídeos/git/2024-05-17-EsclarecimentosComOLeo.mp4
+* prática do QA
+faço desde o primeiro passo na branch de master ou de qa?
+
+---> git checkout mater
+faz um git fetch origin qa
+não trafega atualizações
+
+(dentro da branch de master)
+git reset --hard origin/qa
+traz pra dentro da branch logada no momento a branch que foi citada no final do comando acima
+
+(dentro da branch de qa)
+git reset --hard origin/paidFeatura/OP-3060
+traz pra dentro da branch logada no momento a branch que foi citada no final do comando acima
+
+git checkout qa
+git pull
+git pull origin a_branch_que_quer_fazer_o_merge
+---------------------------------
+
+dentro da branch de qa:
+----> não precisa: git fetch origin qa
+git reset --hard origin/qa
+-->não precisa, já está nela: git checkout qa
+git pull
+git pull origin a_branch_que_quer_fazer_o_merge
+que ai ja deixa tua branch de qa atualizada 
+
+agora:
+na paidFeatura/3060
+git pull origin master
+git pull origin tarefaAntonio (em sequência já resolve os conflitos)
+git pull origin tarefaBia (depois mais uma vez resolve conflitos)
+
+* Ler: qual a diferença entre "git fectch" e "git pull"?
+ChatGPT:
+As diferenças entre `git fetch` e `git pull` são fundamentais para entender como o Git trabalha com repositórios remotos e locais. Aqui está uma explicação detalhada de cada um:
+
+### `git fetch`
+
+- **Descrição**: O comando `git fetch` busca todas as atualizações de commits, branches e tags do repositório remoto para o repositório local. No entanto, ele não altera o estado atual de sua árvore de trabalho ou a branch atual em que você está trabalhando.
+- **Uso**:
+  - Atualiza todas as referências remotas (`refs/remotes/`).
+  - Permite que você veja as mudanças feitas no repositório remoto sem afetar o seu trabalho atual.
+  - Após o `git fetch`, você pode inspecionar as atualizações e decidir como e quando integrá-las ao seu trabalho local.
+
+```bash
+git fetch origin
+```
+
+### `git pull`
+
+- **Descrição**: O comando `git pull` é um atalho que executa dois comandos: `git fetch` seguido de `git merge`. Ele busca as atualizações do repositório remoto e, em seguida, aplica essas mudanças na sua branch atual.
+- **Uso**:
+  - Atualiza a branch atual com as mudanças do repositório remoto.
+  - Combina as atualizações remotas com o trabalho local usando um merge (ou um rebase, se configurado).
+  - Pode causar conflitos de merge se houver mudanças conflitantes entre o trabalho local e remoto.
+
+```bash
+git pull origin main
+```
+
+### Diferenças Chave
+
+1. **Atualização vs. Atualização e Integração**:
+   - `git fetch` apenas atualiza as referências locais para refletir o estado do repositório remoto, sem alterar a árvore de trabalho ou a branch atual.
+   - `git pull` atualiza as referências locais e, em seguida, tenta integrar essas mudanças na branch atual.
+
+2. **Controle**:
+   - `git fetch` dá mais controle, permitindo que você veja as mudanças antes de integrá-las, o que é útil para revisões de código e para evitar conflitos inesperados.
+   - `git pull` é mais conveniente quando você está pronto para integrar imediatamente as mudanças do repositório remoto à sua branch atual.
+
+3. **Conflitos**:
+   - Com `git fetch`, você pode revisar e resolver conflitos manualmente antes de fazer o merge.
+   - Com `git pull`, os conflitos são resolvidos durante o merge que ocorre após a busca das atualizações.
+
+### Exemplos de Uso
+
+- **`git fetch`**: Ideal quando você quer revisar as mudanças no repositório remoto antes de integrá-las.
+  ```bash
+  git fetch origin
+  git log origin/main
+  ```
+
+- **`git pull`**: Útil quando você deseja atualizar rapidamente sua branch com as mudanças mais recentes do repositório remoto.
+  ```bash
+  git pull origin main
+  ```
+
+### Resumo
+
+- **`git fetch`**: Atualiza referências remotas sem alterar seu trabalho local.
+- **`git pull`**: Atualiza e integra as mudanças remotas à sua branch atual.
+
+Entender essas diferenças ajuda a gerenciar melhor o fluxo de trabalho e a colaboração em um projeto usando Git.
+* git fetch master traz também as subbranchs de master? E git pull? 
+* como removo arquivos da staging area?

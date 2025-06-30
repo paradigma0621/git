@@ -57,3 +57,11 @@ Professor: Otávio Reis
 		git merge ramificacao1
 		git status (vai gerar a mensagem: "Your branch is ahead of 'origin/main' by 1 commit."   (que quer dizer que precisamos atualizar a main do github com a "main" local. Fazemos isso na linha abaixo:)
 		git push origin main
+
+-------------------------------------
+Visualização gráfica dos caminhos das branchs no GitHub
+No GitHub, você pode visualizar o caminho visual das transformações dos commits dentro das branches usando o recurso de "network graph" (gráfico de rede) ou "network". Esse recurso mostra um gráfico que ilustra como os commits e as branches interagem ao longo do tempo no repositório. Aqui estão os passos para acessar o gráfico de rede no GitHub:
+
+Acesse o Repositório: Entre no GitHub e navegue até o repositório de interesse.
+Abra a aba 'Insights': No menu superior do repositório, clique em 'Insights'.
+Selecione 'Network': No menu lateral dentro de Insights, clique em 'Network'. Isso abrirá o gráfico de rede.

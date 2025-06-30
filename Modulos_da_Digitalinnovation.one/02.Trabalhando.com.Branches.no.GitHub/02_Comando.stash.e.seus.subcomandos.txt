@@ -29,11 +29,13 @@ Professor: Otávio Reis
 	os arquivos da "branchAlterada" vem contaminar o contexto da "branchX". Os arquivos file1.txt e file2.txt estarão no diretório corrente. Além disso podemos vê-los com:
 		git status   (vai relatar que estão na stage area os: file1.txt, file2.txt)
 
-	Um novo conceito para contornar esse comportamento é o stash: como que guarda os arquivos numa caixa - mais especificamente: guarda os arquivos do index (da staging area) e os arquivos untracked, também, numa caixa. Comando:
-		git stash save "Mensagem qualquer descritiva"
+	Um novo conceito para contornar esse comportamento é o stash: como que guarda os arquivos numa caixa - mais especificamente: guarda os arquivos do index (da staging area) (porém os arquivos que forem novos e que estiverem em untracked continuam na pasta do repo mesmo após o git stash), também, numa caixa. Comando:
+		git stash 	save "Mensagem qualquer descritiva"
 			ou
 		git stash
 	(nessa última o próprio git definirá a mensagem + SHA1 do último commit da branch. Obs: O 'WIP' da mensagem gerada significa: "Work in progress")
+
+	(Dúvida que surgiu: já vi que os arquivos novos, que não forem adicionados para a staging area: não são guardados com o comando stash. E se o arquivo for já existente, mas foi modificado e não adicionado para a staging area: são guardados com o comando stash? R: Sim.)
 
 	O stash funciona como um array. Podemos listas os mesmos salvos com:
 		git stash list

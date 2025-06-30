@@ -1,0 +1,191 @@
+curso: https://cursos.alura.com.br/course/git-github-branching-conflitos-pull-requests
+* git show {hash}
+Que o comando git show {hash} mostra todas as alterações aplicadas pelo commit com o hash informado.
+* fazer um pull de uma branch local para dentro de outra branch local
+Para injetar uma branch local (branchXlocal) dentro de onde está o HEAD (por exemplo, em master):
+	 git pull . branchXlocal   
+* rebase
+E criaremos mais um commit para isto, git add index.html, git commit -m "Quebras de linha", e assim teremos todas as alterações necessárias para criarmos o novo PR (pull request). Porém, antes disso, vamos conversar novamente sobre a quantidade de commits. Se executarmos git log --oneline, verificaremos que existem 3 commits a serem enviados, e então analisados pelo Vinicius. Poderemos juntá-los, e para modificarmos a linha do tempo do branch de forma interativa, isto é, selecionando os commits a serem unificados, utilizaremos:
+	git rebase -i HEAD~3    (agrupará num único commit os 3 últimos commits)
+
+Outra opção seria selecionar, copiar e colar manualmente o commit *imediatamente anterior ao primeiro* (ou seja: para agrupar os 3 últimos commits num só, precisamos passar o hash do 4o commit de cima pra baixo da relação da saída git log --oneline) com o qual queremos trabalhar, acrescentando-o ao fim do comando git rebase -i
+
+Ao executarmos, receberemos a lista dos commits que queremos analisar. O primeiro comando, que por enquanto estará como pick, será responsável por definir se iremos juntar os commits ou não. Basicamente, teremos do commit mais antigo para o mais novo, de cima para baixo, e informaremos que queremos unificar "adicionado arquivo 3" com o commit anterior, "adicionado arquivo 2", e também com "adicionado arquivo 1".
+
+Para fazermos isto, substituiremos os pick por s, de squash, juntar, apertando:
+
+pick 971dba0 adicionado arquivo 1
+s 3db095f adicionado arquivo 2
+s af37cf6 adicionado arquivo 3
+
+Com isso, os três commits se tornarão um só, o único que possui pick. Salvaremos, no caso de você estar utilizando o VIM, o atalho é ":x", e será informado que precisaremos atribuir uma nova mensagem ao commit (AP: pra mim não aparece essa oportunidade de inserir nova descrição do commit), que então será "Trocando UL por DL e separando os títulos", pois, para quem for revisar o código, as quebras de linhas não são tão relevantes.
+AP: No meu editor da minha máquina, após sair do editor foi tomada como mensagem padrão dos commits a concatenação das 3 mensagens de commit.
+
+Usaremos ":x" para sair, e assim o Git já reescreve o histórico de commits. Executaremos git log --oneline e veremos apenas um commit, no lugar dos 3 anteriores - aprecendo primeiro a msg do commit de arquivo 1 (mais antigo), depois do arquivo 2, por fim a do arquivo 3 (commitado por último).
+* cherry-pick: puxando um único commit pra dentro da branch atual
+Nesse tópico veremos como podemos trazer um único commit específico de outra branch para a branch em que estamos trabalhando.
+
+Criamos um/ou mais arquivo(s) numa branchX, e queremos que as adições sejam trazidas para outra branch - ex: master.
+Poderemos, então, copiar o hash do commit desejado, e trazer manualmente para onde queremos, que seria o branch atual (à qual está atribuido o HEAD). Para fazermos isto, usaremos 
+
+	git cherry-pick 8f7c801 
+
+Reparem que o HEAD, isto é, o local em que estamos, e o estado em que o nosso código está, fica na master. Ao executarmos o comando, o commit é selecionado e trazido para ela. Com isso, podemos buscar e trazer um commit específico. 
+
+Obs: Apesar de o cherry-pick trazer os arquivos sem nem mesmo desenhar flecha no diagrama gráfico de percurso dos commits na branch, quando ocorre conflito de merge é preciso resolvê-lo da mesma for que se fosse um git pull.
+* git bisect
+Suponhamos que alguém da nossa equipe sobrescrevesse uma alteração que realizamos, modificando o título de "Lista de Cursos" para "Lista de Cursos de DevOps", inclusive commitando a alteração, e que, ainda, uma terceira pessoa da equipe, sabendo que esta alteração não deveria ter sido feita, modificasse o texto para "Lista de Cursos da Alura", commitando em seguida. Além disso, outra pessoa teria alterado o título depois de tudo isso, para "Cursos da Alura", e mais alguém voltaria o texto para "Lista de Cursos".
+
+Muitas modificações foram feitas no título, e agora queremos encontrar o momento exato que determinada alteração foi aplicada. Isto quer dizer que queremos voltar ao estado em que o título esteve como "Lista de Cursos da Alura", por exemplo. Executando git log --oneline, notaremos que as mensagens de commits não são muito significativas e não nos ajudam nisso.
+
+Seria necessário indicarmos ao Git que ele terá que buscar, dentre determinados commits — como os cinco últimos, por exemplo —, e ele teria que passar por cada um deles. Esta feature é chamada de bisect, e para executá-la digitaremos 
+
+	git bisect start
+
+o que inicializará a busca do lado do Git. Inicialmente, é preciso informar a ele um estado, ou commit cuja parte do código que queremos não esteja boa, no caso, o título deverá ser "Lista de Cursos da Alura".
+
+Vamos executar 
+
+	git bisect bad HEAD
+
+e em seguida devemos informar o estado em que possivelmente estava bom, isto é, a partir de onde ele irá buscar o commit desejado. Então, copiaremos o hash referente à primeira alteração de título, e digitaremos 
+	
+	git bisect good c17076a
+
+Estes serão os limites da busca feita pelo Git. Obteremos a mensagem de que há uma revisão a mais para testarmos depois desta, e ele nos mostrará o estado de "Mudando título".
+
+AP: O interessante aqui, ao ir direcionando os git bisect bad/good é deixar o editor de texto (IntelliJ/VSCode) para ir vendo a mudança do código conforme vai-se navegando nas checkouts/modificações que o bisect vai operando entre os commits.
+
+Neste estado, o título será aquele que queremos, e se ele ainda não tivesse encontrado a alteração desejada, continuaríamos executando 
+
+	git bisect bad
+
+mas no nosso caso, como já estaremos no estado desejado, usaremos 
+
+	git bisect good
+
+Após esta revisão, se tudo estiver bem, não precisaremos mais fazer nada. Para finalizar a busca, uma vez que o Git já nos entregou o hash e a descrição do commit, usaremos 
+
+	git bisect reset
+
+com o qual voltaremos à master. Execute git bisect reset para indicar que você finalizou a busca;
+
+Com o hash do commit, poderíamos desfazer a alteração, analisar o porquê da inclusão dela, perguntar o que aconteceu à pessoa que realizou o commit. Para verificarmos todas as alterações referentes ao commit, aplicaremos o comando 'git show' seguido do hash. Para reverter esta ação, pode-se utilizar 'git revert' juntamente ao hash.
+
+Notem como é relativamente fácil encontrar um commit em que uma alteração específica foi implementada, sem que precisássemos, por exemplo, usar o git checkout ou git show em cada um dos commits existentes. E se, a partir do momento em que encontramos uma alteração, ou quando ainda estivermos analisando o log de commits, quisermos saber quem foi o responsável por determinado commit, será que o GitHub consegue nos ajudar?
+
+
+* git blame
+Vimos uma forma de encontrar bugs, muito sobre open source, temos trabalhado de forma bastante profissional com o Git, mas há uma pequena dúvida: queremos saber quem é o responsável por adicionar a linha <h2>Cursos de DevOps</h2> em nosso arquivo, pois lembramos que anteriormente o h2 era h1. Eu estava de férias na época e não sabemos o motivo desta alteração, e queremos questioná-lo sobre.
+
+O Git permite um comando denominado 
+
+	git blame nome_de_um_arquivo
+
+a partir do qual são exibidos os responsáveis por cada uma das linhas do arquivo. Também constam informações acerca do horário e data dos commits. 
+
+
+* git revert
+** git revert hash
+Adiciono 3 commits, cada um composto por um arquivo, nessa ordem de adição:
+commit1.txt, commit2.txt, commit3.txt
+ 
+consideremos que no 'git log': o hash do commit2 corresponda à 4e0d1b4
+Então com o comando:
+
+	git revert 4e0d1b4
+
+Obtemos:
+Removendo commit2.txt
+[master 493a6ba] Revert "commit 2"
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 commit2.txt
+
+Fazendo um ls no diretório teremos os arquivos commit1.txt e commit3.txt. Atentar que o commit3.txt foi criado e commitado após o commit do commit2.txt.. e ele não foi removido.
+Outra obseravação que vem complementar a acima é que na linha de tempo não é feito um fork, mas sim apenas adicionada um novo commit onde nele é excluido o commit2.txt.
+** explique: git revert 34kjf93f -m 1
+O comando git revert é usado para criar um novo commit que desfaz as alterações de um commit anterior. No caso específico de git revert 34kjf93f -m 1, ele é usado para reverter um commit de merge. Vamos quebrar os elementos desse comando:
+
+1) git revert: Inicia o comando de reversão, que cria um novo commit que desfaz as mudanças de um commit especificado.
+
+2) 34kjf93f: Este é o hash do commit que você deseja reverter. Cada commit no Git tem um identificador único, e esse hash refere-se ao commit específico que você quer desfazer.
+
+3) -m 1: Esta opção é usada especificamente para reverter commits de merge. Quando um merge é revertido, é necessário especificar qual branch "principal" deve ser mantida. No caso de um merge, há pelo menos dois pais para o commit de merge. A opção -m 1 indica que o primeiro pai do commit de merge deve ser mantido.
+* apagar arquivos criados novos da branch
+como limpo minha branch atual do git dos arquivos criados novos?
+
+Para limpar a branch atual do Git de arquivos novos criados, você pode usar o comando `git clean`. Esse comando remove arquivos não rastreados (untracked files) do seu diretório de trabalho. Aqui está como você pode usá-lo:
+
+1. **Verificar quais arquivos serão removidos**: Execute o comando abaixo para ver uma lista dos arquivos que serão removidos, sem realmente removê-los ainda:
+    ```bash
+    git clean -n
+    ```
+   O parâmetro `-n` é para a opção de "dry run", que mostra o que será feito sem realmente fazer.
+
+	 git clean -nd      (mostra tb os diretórios que serão removidos se usado git clean -fd)
+
+2. **Remover os arquivos**: Se você está satisfeito com a lista e deseja realmente remover esses arquivos, execute:
+    ```bash
+    git clean -f
+    ```
+   O parâmetro `-f` é para "force", que força a remoção dos arquivos.
+
+3. **Incluir diretórios**: Se houver diretórios não rastreados que você também deseja remover, adicione o parâmetro `-d`:
+    ```bash
+    git clean -fd
+    ```
+
+4. **Excluir arquivos ignorados**: Se você também deseja remover arquivos listados no seu `.gitignore`, use o parâmetro `-x`:
+    ```bash
+    git clean -fdx
+    ```
+
+### Exemplo Completo
+```bash
+# Verificar o que será removido
+git clean -n
+
+# Remover arquivos não rastreados
+git clean -f
+
+# Remover arquivos e diretórios não rastreados
+git clean -fd
+
+# Remover arquivos e diretórios, incluindo os ignorados
+git clean -fdx
+```
+
+Use esses comandos com cuidado, especialmente o `git clean -fdx`, pois eles podem remover permanentemente arquivos e diretórios não rastreados do seu diretório de trabalho.
+* trabalho com 2 branchs
+
+** mergear mais de uma tarefa em master quando em uma delas foi injetada a outra 
+exemplo:
+- Edilson tem a branch OD-960  parcialmente concluída
+- Eu faço injeção da OD-960 na minha branch nova OD-1000
+- Acabo minha tarefa na OD-1000 e subo essa branch pra master
+- Edilson acaba a OD-960 e injeta ela em master 
+
+Independentemente se eu injeto minha branch antes ou depois de injetar a do Edilson em master: Os arquivos comuns de alteração "percorrem o caminho de alteração 2 vezes": mesmo que o código do Edilson tenha linhas de código implementadas, se eu as removi na minha branch: quando ambas subirem para master, master não conterá as linhas excluidas (da minha branch).
+
+Ou seja: quando se faz injeção de uma branch1 em uma branch2, não se deve apagar código da branch1 na branch2.
+
+Quando é feita injeção de uma branch em outra faz sentido falar-se em "caminho" no processo de merge do git.
+**  mergear mais de uma tarefa em master quando não foi feita injeção de uma em outra
+- Branch do Edilson tem o arquivo codigo.java
+- Eu tenho minha branch em que também crio o arquivo codigo.java do zero
+- Branch do Edilson é injetada em master
+- Minha branch é injetada em master
+
+Mesmo que o código do Edilson tenha linhas de código implementadas, se na minha branch eu não tinha essas mesmas linhas: quando ambas subirem para master, master será justa e inteligente e conterá tanto o código da minha branch, como da do Edilson (incluindo o código da branch dele que não havia na minha branch).
+
+Dentro de um mesmo arquivo: quando os códigos novos são blocos de código isolados inseridos aqui e ali no código: o git é inteligente e inseri os blocos nos lugares novos dentro do arquivo conciliado em master sem nem mesmo dar conflito.
+
+Dentro de um mesmo arquivo: quando os códigos novos são blocos de código inseridos se intermediando: conflito de merge, porém, como os bloco são modulares é fácil resolver - basta ir enxertando os blocos de código nos arquivos de conciliação em master.
+
+Dentro de um mesmo arquivo: quando os arquivos mudam trechos dentro de uma mesma linha: conflito que deve ser pensado
+
+
+
+
+
+

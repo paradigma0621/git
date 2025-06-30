@@ -37,6 +37,11 @@ Uma vez apagado ela do servidor, entrando nela localmente:
 que a branchK sobe pro servidor (sem precisar fazer commit).
 
 ------------------------
+** caso se apague branchs que foram intermediarias pra criação de outras branchs finais
+Não dá nada apagar as branchs intermediárias que foram caminhos para outras branchs; os commits que levaram a criação de outra branch à partir das primeiras que foram apagadas permanecem, só somem as "nomenclaturas" das branchs, e por fim, fica assinada a branch que foi gerada no final (a que foi feita à partir de
+   git checkout -b branchNova
+dentro da branch intermediária que se apagou
+Isso independentemente se foi ou não feito merge em master no meio do caminho de criações de branchs - é indiferente.
 * renomear nome de branch
 To rename the current branch:
 	git branch -m <newname>
@@ -160,3 +165,266 @@ git push -f
 git checkout qa   (checkout na branch local)
 git reset --hard origin/qa   (espelho na minha branch local o histórico da branch qa remota)
 
+* para apagar os arquivos que estão como "Arquivos não monitorados:" (que aparecem quando digito git status)
+** apagar arquivos que não estão na staging area
+Para limpar arquivos não monitorados em um repositório Git, você pode usar o comando `git clean`. Este comando remove arquivos que não estão sob o controle de versão do Git, ou seja, arquivos que não foram adicionados ao índice ou a qualquer commit no repositório.
+
+Antes de executar o comando para remover os arquivos, você pode usar a opção `-n` ou `--dry-run` para fazer uma simulação e mostrar quais arquivos seriam removidos, sem realmente excluí-los. Isso é útil para verificar e garantir que você não apague nenhum arquivo importante por engano.
+
+```bash
+git clean -n
+```
+
+Para remover os arquivos não monitorados de fato, você pode usar o comando:
+
+```bash
+git clean -f
+```
+
+Aqui, a opção `-f` ou `--force` é necessária para executar a limpeza, pois age como uma medida de segurança para prevenir a exclusão acidental de arquivos que possam ser importantes.
+
+Se você também deseja remover diretórios não monitorados, além de arquivos individuais, você pode adicionar a opção `-d`:
+
+```bash
+git clean -fd
+```
+
+Além disso, se houver arquivos ignorados (especificados no arquivo `.gitignore` ou `.git/info/exclude`) que você também deseja remover, você pode incluir a opção `-x`. Isso fará com que o `git clean` ignore as regras do `.gitignore` e remova todos os arquivos não monitorados, incluindo os ignorados:
+
+```bash
+git clean -fdx
+```
+
+**Atenção**: Esteja ciente de que `git clean` é um comando destrutivo; os arquivos removidos por ele não podem ser recuperados a partir do repositório Git. É altamente recomendável verificar os arquivos que serão removidos com a opção `-n` antes de executar o comando com `-f`. Se houver arquivos que você deseja manter, certifique-se de adicioná-los ao controle de versão com `git add` ou movê-los para um local seguro antes de limpar.
+** apagar arquivos que estão na staging area
+*** pergunta pro ChatGPT
+quero excluir esses arquivos:
+No ramo novaBranchBorsatto
+Mudanças a serem submetidas:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   src/main/java/com/nexti/core/server/dto/TaskOperationalIccDto.java
+	new file:   src/main/java/com/nexti/core/server/dto/analytic/TaskNotExpiredForIccOperationalDto.java
+	new file:   src/main/java/com/nexti/core/server/service/analytic/DoneOperatinalIccService.java
+	new file:   src/main/java/com/nexti/core/server/service/analytic/ExpiredTasksOperationalService.java
+
+*** resposta do ChatGPT
+Os arquivos listados estão na área de *staging* (preparados para commit). Para excluí-los e removê-los do seu diretório de trabalho, você pode seguir os passos abaixo:
+
+---
+
+### 1. **Remover arquivos da área de staging (unstage)**
+Primeiro, remova os arquivos da área de staging com o comando:
+
+```bash
+git restore --staged <file>
+```
+
+Ou, para remover todos os arquivos da área de staging de uma vez:
+
+```bash
+git restore --staged .
+```
+
+---
+
+### 2. **Excluir os arquivos do diretório de trabalho**
+Após removê-los da área de staging, você pode usar o seguinte comando para excluir os arquivos fisicamente:
+
+```bash
+git clean -f
+```
+
+Se os arquivos estiverem em diretórios específicos que você também deseja excluir, inclua a opção `-d`:
+
+```bash
+git clean -fd
+```
+
+---
+
+### 3. **Combinar ambos os passos em um comando único**
+Se você quer desmarcar (unstage) e excluir os arquivos de uma só vez, pode usar o comando:
+
+```bash
+git rm --cached <file>
+```
+
+Ou, para todos os arquivos em staging:
+
+```bash
+git rm --cached -r .
+```
+
+Isso removerá os arquivos da área de staging e permitirá que você os exclua do diretório de trabalho.
+
+---
+
+### Resumo com o exemplo fornecido:
+1. Para desmarcar e excluir os arquivos individualmente:
+   ```bash
+   git rm --cached src/main/java/com/nexti/core/server/dto/TaskOperationalIccDto.java
+   git rm --cached src/main/java/com/nexti/core/server/dto/analytic/TaskNotExpiredForIccOperationalDto.java
+   git rm --cached src/main/java/com/nexti/core/server/service/analytic/DoneOperatinalIccService.java
+   git rm --cached src/main/java/com/nexti/core/server/service/analytic/ExpiredTasksOperationalService.java
+   ```
+
+2. Para fazer tudo de uma vez:
+   ```bash
+   git restore --staged .
+   git clean -f
+   ```
+* para recuperar um arquivo que aparece como "deleted" quando rodamos git status
+Para recuperar um arquivo que foi deletado do Git, você pode seguir um destes métodos, dependendo do seu caso:
+
+### Se o arquivo foi deletado e o delete foi commitado:
+
+1. **Encontre o último commit onde o arquivo existia:**
+
+   Você pode usar o comando `git log` junto com o caminho do arquivo para encontrar o último commit em que o arquivo ainda estava presente. Se você não se lembra do caminho exato do arquivo, pode começar procurando nos commits recentes usando `git log --summary` que mostra um resumo das alterações, incluindo arquivos deletados.
+
+   Para encontrar o commit específico, use:
+   ```bash
+   git log -- <caminho/do/arquivo>
+   ```
+   
+   Isso listará os commits que afetaram o arquivo. O último commit na lista (o mais antigo mostrado) é onde o arquivo existia.
+
+2. **Restaure o arquivo do commit encontrado:**
+
+   Depois de identificar o commit, use o seguinte comando para restaurar o arquivo:
+   ```bash
+   git checkout <hash-do-commit>^ -- <caminho/do/arquivo>
+   ```
+   O `^` após o hash do commit indica que você deseja o estado do arquivo como estava antes desse commit (ou seja, quando o arquivo ainda existia).
+
+Lembre-se, substitua `<hash-do-commit>` pelo identificador do commit que você encontrou e `<caminho/do/arquivo>` pelo caminho completo do arquivo que deseja recuperar.
+
+**Nota:** A recuperação de arquivos deletados é possível apenas se as mudanças foram commitadas no histórico do Git. Se o arquivo foi deletado e nunca foi commitado, ou se os commits foram apagados do histórico (por exemplo, através de um `git reset` duro ou `git rebase`), pode não ser possível recuperar o arquivo através desses métodos.
+* comandos interessantes
+** git log -- <caminho/do/arquivo>
+  Isso listará os commits que afetaram o arquivo. O último commit na lista (o mais antigo mostrado) é onde o arquivo existia.
+* qual a melhor maneira usando git de "pausar" o trabalho em uma branch  e trabalhar em outra, considerando que na  branch que quero pausar eu tenha todos tipos de arquivos (novos, alterados e sem alteração)?
+A melhor maneira de "pausar" o trabalho em uma branch no Git, considerando que você tem apenas **arquivos novos** (sem alterações em arquivos existentes), é usar **stash** com a flag apropriada para incluir os novos arquivos. Aqui está o passo a passo:
+
+### 1. Faça o stash dos arquivos novos
+Use o comando abaixo para guardar os novos arquivos no stash:
+
+```bash
+git stash push -u -m "Pausando trabalho na branch X"
+```
+
+- **`-u`**: Inclui arquivos não rastreados (novos arquivos) no stash.
+- **`-m`**: Permite adicionar uma mensagem descritiva, facilitando a identificação do stash posteriormente.
+
+### 2. Mude para a nova branch
+Depois de armazenar o trabalho no stash, você pode trocar de branch normalmente:
+
+```bash
+git checkout nome-da-outra-branch
+```
+
+### 3. Trabalhe na nova branch
+Faça as alterações necessárias na nova branch.
+
+### 4. Retorne para a branch anterior
+Quando terminar o trabalho na nova branch e quiser retomar o trabalho "pausado":
+
+1. Volte para a branch original:
+
+   ```bash
+   git checkout nome-da-branch-original
+   ```
+
+2. Aplique o stash para restaurar os arquivos novos:
+
+   ```bash
+   git stash apply
+   ```
+
+   Se houver múltiplos stashes, você pode listar todos com:
+
+   ```bash
+   git stash list
+   ```(Obs ler no final dessa seção sobre qual stash push foi feito primeiro numa lista )
+
+   E aplicar o stash correto com:
+
+   ```bash
+   git stash apply stash@{n}
+   ```
+
+### 5. Opcional: Remova o stash
+Após aplicar o stash, você pode removê-lo se não precisar mais dele:
+
+```bash
+git stash drop stash@{n}
+```
+
+Ou limpar todos os stashes (com cuidado):
+
+```bash
+git stash clear
+```
+
+### Benefícios desse método:
+- Preserva seu progresso sem forçá-lo a criar commits parciais.
+- Mantém o histórico limpo e organizado.
+- É simples e eficaz quando os arquivos novos não estão prontos para serem comitados.
+
+Se você frequentemente realiza essa pausa, é uma boa prática usar mensagens claras no stash para facilitar o retorno ao trabalho.
+
+** qual stash push foi feito primeiro numa lista (git stash list)
+possível saída:
+```
+stash@{0}: On novaBranchBorsatto: Adicionei 1 só arquivo
+stash@{1}: On OP-3635: Pausando trabalho na branch de dashboard
+```
+o stash@{0} foi feito depois do stash@{1}. Ou seja: os stash de menor índice (por índice entendo o "n", que nesse exemple são o '0' e '1') foram inseridos por último.
+
+Para recuperar o stash@{1}, rodar:
+   git stash apply stash@{1}
+isso carrega pra pasta atual o que estava salvo, mas não remove o stash@{1} da lista do git.
+
+Para remover o stash@{1} da lista: rodar:
+   git stash drop stash@{1}
+* configuração do git para modo quando rodar "git pull"
+** exemplo da mensagem de requisição
+➜  nexti-web git:(roadmapFeature/OP-3731) git pull origin roadmapFeature/OP-3720
+remote: Enumerating objects: 124, done.
+remote: Counting objects: 100% (122/122), done.
+remote: Compressing objects: 100% (93/93), done.
+remote: Total 93 (delta 80), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (93/93), 136.25 KiB | 520.00 KiB/s, done.
+From bitbucket.org:presenca/nexti-web
+ * branch                roadmapFeature/OP-3720 -> FETCH_HEAD
+   05e564d05..60d970df0  roadmapFeature/OP-3720 -> origin/roadmapFeature/OP-3720
+hint: You have divergent branches and need to specify how to reconcile them.
+hint: You can do so by running one of the following commands sometime before
+hint: your next pull:
+hint: 
+hint:   git config pull.rebase false  # merge (the default strategy)
+hint:   git config pull.rebase true   # rebase
+hint:   git config pull.ff only       # fast-forward only
+hint: 
+hint: You can replace "git config" with "git config --global" to set a default
+hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+hint: or --ff-only on the command line to override the configured default per
+hint: invocation.
+** qual opção escolher
+???? Na Nexti usamos git config pull.rebase x ???
+** qual opção escolher
+Na nossa squap OP usamos:
+	 git config pull.rebase false
+** para ver qual a configuração atual
+git config pull.rebase
+** referência de explicação 
+https://lukemerrett.com/different-merge-types-in-git/
+*** explicação do colega  (mas não é o padrão que usamos em nossa squad)
+Motivo pelo qual  EU uso o rebase localmente:
+Geralmente quando quero fazer um merge para uma branch local minha, geralmente quero que as minhas modificações locais fiquem "depois" das modificações do remoto (meus commits locais ficarem após o remoto). Neste caso, o rebase faz mais sentido
+Isto geralmente é o que mais acontece para mim. Então defino o meu padrão para rebase true.
+
+De qualquer forma, em todos os nossos repositórios, ao mergear um PR, usamos o Squash, que junta todos os commits feitos pelo desenvolvedor no PR e transforma em apenas 1 commit. Isto possibilita que o dev faça quantos commits quiser na sua branch mas não bagunça a master 
+Mas claro que, como falei, é a minha situação. Isto pode ser diferente de acordo com o trabalho de cada um
+O importante é saber as diferenças dos tipos de merge @Lucas
+Não temos uma convenção definida para esta parte local. Apenas na master é que temos o Squash Merge configurado
